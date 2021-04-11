@@ -1,14 +1,14 @@
-
 from flask import Flask, request, render_template
 import sys
 import Adafruit_DHT
+import sqlite3
 
 app = Flask(__name__)
 app.debug = True # Make this False if you are no longer debugging
 
 @app.route("/")
 def hello():
-    return "Sem 4 mini project"
+    return "Hello World!"
 
 @app.route("/lab_temp")
 def lab_temp():
@@ -18,6 +18,16 @@ def lab_temp():
 	else:
 		return render_template("no_sensor.html")
 
+@app.route("/lab_env_db")
+def lab_env_db():
+	conn=sqlite3.connect('/var/www/lab_app/lab_app.db')
+	curs=conn.cursor()
+	curs.execute("SELECT * FROM temperatures")
+	temperatures = curs.fetchall()
+	curs.execute("SELECT * FROM humidities")
+	humidities = curs.fetchall()
+	conn.close()
+	return render_template("lab_env_db.html",temp=temperatures,hum=humidities)
 
 if __name__ == "__main__":
     app.run(host='0.0.0.0', port=8080)
