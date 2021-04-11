@@ -1,2 +1,2 @@
-/build
-*.db
+build/
+lab_app.db
