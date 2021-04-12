@@ -3,12 +3,12 @@ import time
 inPin2 = 7
 GPIO.setwarnings(False)
 GPIO.setmode(GPIO.BOARD)
-GPIO.setup(inPin, GPIO.IN)
+GPIO.setup(inPin2, GPIO.IN)
 while True:
-    value = GPIO.input(inPin2)
+    value2 = GPIO.input(inPin2)
     print(value)
 
-    if value :
+    if value2 :
         print('not detected')
     else:
         print('detected')

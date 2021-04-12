@@ -8,7 +8,7 @@ app.debug = True # Make this False if you are no longer debugging
 
 @app.route("/")
 def hello():
-    return "Hello World!"
+    return render_template("intro.html")
 
 @app.route("/lab_temp")
 def lab_temp():
@@ -18,6 +18,38 @@ def lab_temp():
 	else:
 		return render_template("no_sensor.html")
 
+@app.route("/other_sensors")
+def sensors2():
+        import RPi.GPIO as GPIO 
+        import time 
+        inPin = 13
+        inPin2 = 7
+        GPIO.setwarnings(False)
+        GPIO.setmode(GPIO.BOARD)
+        GPIO.setup(inPin, GPIO.IN)
+        GPIO.setup(inPin2, GPIO.IN)
+        while True:
+            value = GPIO.input(inPin)
+            value2 = GPIO.input(inPin2)
+            
+            if value2 :
+                return('not detected')
+            else:
+                return('detected')
+            time.sleep(0.1)
+
+            if value :
+                return('Gas leak detected')
+            else:
+                return('No Gas Leak detected')
+            time.sleep(0.1)
+
+
+
+
+
 
 if __name__ == "__main__":
     app.run(host='0.0.0.0', port=8080)
+
+

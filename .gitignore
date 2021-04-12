@@ -1,2 +1,7 @@
 /build
 *.db
+*.swp
+*.swl
+*.swm
+*.swn
+*.swo
