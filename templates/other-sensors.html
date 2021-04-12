@@ -1,9 +1,9 @@
 <html>
   <meta charset="utf-8">
   <title>Lab Conditions by RPi</title>
-  <meta http-equiv="refresh" content="10">
+  <meta http-equiv="refresh" content="5">
   <meta name="description" content="Lab conditions - RPi">
-  <meta name="author" content="Peter Dalmaris">
+  <meta name="author" content="Yash Kathe">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link href="//fonts.googleapis.com/css?family=Raleway:400,300,600" rel="stylesheet" type="text/css">
   <link rel="stylesheet" href="/static/css/normalize.css">
@@ -14,14 +14,15 @@
     <div class="container">
       <div class="row">
         <div class="two-third column" style="margin-top: 5%">
-            <h2>Real time conditions updated every 10 seconds</h2>
-	    <h1>Temperature: {{"{0:0.1f}".format(temp) }}°C</h1>
-            <h1>Humidity: {{"{0:0.1f}".format(hum)}}%</h1><br>
+	    <h2>Real time conditions</h2>
+            <h1>Detection by ir : {{message}}</h1>
+	    <h1>Gas leak detected ? : {{message2}}</h1>
 	    <br>
 	    <br>
 	    <br>
-	    <p>-------------------------------------</p>
-            <p>This page refreshes every 10 seconds</p>
+	    <br>
+	    <p>-------------------------------------------------------</p>
+            <p>This page refreshes every 5 seconds</p>   
         </div>   
       </div>
     </div>           
