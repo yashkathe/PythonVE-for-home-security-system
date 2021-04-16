@@ -23,26 +23,35 @@
   </head>
   <body>
     <div class="container">
-      <!-- Datetimepicker form start -->
       <div class="row">
-        <form id="datetime_range" action="/lab_env_db" method="GET"> 
-            <div class="three columns">
-              <label for="from">From date</label>
-              <input class="u-full-width" id="datetimepicker1" type="text" value="{{from_date}}" name="from">
-            </div>        
-            <div class="three columns">
-              <label for="to">To date</label>           
-              <input class="u-full-width" id="datetimepicker2" type="text" value="{{to_date}}" name="to">
-            </div>           
-            <div class="two columns">           
-              <input class="button-primary" type="submit" value="Submit" style="position:relative; top: 28px" id="submit_button" />
-            </div>        
-        </form> 
-      </div>
-    <!-- Datetimepicker form end -->
+      <form id="datetime_range" action="/lab_env_db" method="GET">
+        <!-- <div class="row">          -->
+          <div class="three columns">
+            <label for="from">From date</label>
+            <input class="u-full-width" id="datetimepicker1" type="text" value="{{from_date}}" name="from">
+          </div>
+        <!-- </div> -->
+        <!-- <div class="row"> -->
+          <div class="three columns">
+            <label for="to">To date</label>
+            <input class="u-full-width" id="datetimepicker2" type="text" value="{{to_date}}" name="to">
+          </div>
+        <!-- </div>          -->
+        <!-- <div class="row"> -->
+          <div class="two columns">
+            <input type="hidden" class="timezone" name="timezone" />
+            <input class="button-primary" type="submit" value="Submit" style="position:relative; top: 28px" id="submit_button" />
+          </div>
+        <!-- </div> -->
+      </form>
+    </div>
       <div class="row">
       <div class="eleven columns">
-        <form id="range_select" action = "/lab_env_db" method="GET">        
+      <div class="one column">
+          <a href="/lab_temp" style="position:relative;top:15px">Current</a>
+       </div>
+        <form id="range_select" action = "/lab_env_db" method="GET">
+          <input type="hidden" class="timezone" name="timezone" />
           <div class="one column">
             <input type="radio" name="range_h" value="3" id="radio_3" /><label for="radio_3">3hrs</label>
           </div>
@@ -55,7 +64,7 @@
           <div class="one column">
             <input type="radio" name="range_h" value="24" id="radio_24" /><label for="radio_24">24hrs</label>
           </div>
-        </form>          
+        </form>
       </div>
     </div>
       <div class="row">
@@ -73,7 +82,7 @@
                 {% for row in temp %}
                 <tr>
                   <td>{{row[0]}}</td>
-                  <td>{{'%0.2f'|format(row[2])}}</td>
+                  <td>{{'%0.2f'|format(row[1])}}</td>
                 </tr>
                 {% endfor %}
               </tbody>
@@ -90,33 +99,43 @@
                 {% for row in hum %}
                 <tr>
                   <td>{{row[0]}}</td>
-                  <td>{{'%0.2f'|format(row[2])}}</td>
+                  <td>{{'%0.2f'|format(row[1])}}</td>
                 </tr>
                 {% endfor %}
               </tbody>
             </table>
         </div>
-      <!-- Google Charts Code start -->
-      <div class="two-thirds column" style="margin-top: 5%">
-        <div class="row">                  
+
+        <div class="two-thirds column" style="margin-top: 5%">
+        <div class="row">
           <div class="row">
             <div class="three columns">
-              <div id="chart_temps"></div>
-              <div id="chart_humid"></div>
+                <div id="chart_temps"></div>
+                <div id="chart_humid"></div>
             </div>
           </div>
-        </div>     
+        </div>
       </div>
-      <!-- Google Charts Code end -->
     </div>
   </body>
+
+  <!-- Fetch jQuery -->
   <script src="//code.jquery.com/jquery-3.5.0.slim.min.js"></script>
-  
 
   <!-- Datetimepicker files start -->
   <link rel="stylesheet" type="text/css" href="//cdnjs.cloudflare.com/ajax/libs/jquery-datetimepicker/2.5.20/jquery.datetimepicker.min.css"/ >
   <script src="//cdnjs.cloudflare.com/ajax/libs/jquery-datetimepicker/2.5.20/jquery.datetimepicker.full.min.js"></script>
+
+
+   <!-- jstimezonedetect script start -->
+  <script src="//cdnjs.cloudflare.com/ajax/libs/jstimezonedetect/1.0.7/jstz.min.js" ></script>
+
   <script>
+    jQuery( "#datetime_range" ).submit(function( event ) {
+        timezone = jstz.determine();
+        jQuery(".timezone").val(timezone.name());
+    });
+
     jQuery('#datetimepicker1').datetimepicker(
       {
         format:'Y-m-d H:i',
@@ -127,28 +146,27 @@
         defaultDate:'{{to_date}}'
       });
 
-      jQuery("#range_select input[type=radio]").click(function(){ 
+    jQuery("#range_select input[type=radio]").click(function(){
+        timezone = jstz.determine();
+        jQuery(".timezone").val(timezone.name());
         jQuery("#range_select").submit();
       });
-  </script>
-  <!-- Datetimepicker files end -->
+    </script>
 
-  <!-- Google Charts JS start -->
   <script type="text/javascript" src="https://www.google.com/jsapi?autoload={'modules':[{'name':'visualization','version':'1','packages':['corechart']}]}"></script>
 
-  <script>
-    google.load('visualization', '1', {packages: ['corechart']});
+      <script>
+       google.load('visualization', '1', {packages: ['corechart']});
     google.setOnLoadCallback(drawChart);
 
     function drawChart() {
 
       var data = new google.visualization.DataTable();
-      data.addColumn('datetime', 'Time');  
-      data.addColumn('number', 'Temperature');      
+      data.addColumn('datetime', 'Time');
+      data.addColumn('number', 'Temperature');
       data.addRows([
-          {% for row in temp %} 
-            [new Date({{row[0][0:4]}},{{row[0][5:7]}} - 1,{{row[0][8:10]}},{{row[0][11:13]}},{{row[0][14:16]}}),
-                {{'%0.2f'|format(row[2])}}],
+          {% for row in temp %}
+            [new Date({{row[0][0:4]}},{{row[0][5:7]}}-1,{{row[0][8:10]}},{{row[0][11:13]}},{{row[0][14:16]}}),{{'%0.2f'|format(row[1])}}],
           {% endfor %}
         ]);
 
@@ -171,20 +189,21 @@
       chart.draw(data, options);
 
     }
-  </script>
 
-  <script>
+      </script>
+
+<script>
     google.load('visualization', '1', {packages: ['corechart']});
     google.setOnLoadCallback(drawChart);
 
     function drawChart() {
 
       var data = new google.visualization.DataTable();
-      data.addColumn('datetime', 'Time');  
-      data.addColumn('number', 'Humidity');      
+      data.addColumn('datetime', 'Time');
+      data.addColumn('number', 'Humidity');
       data.addRows([
           {% for row in hum %}
-            [new Date({{row[0][0:4]}},{{row[0][5:7]}} - 1,{{row[0][8:10]}},{{row[0][11:13]}},{{row[0][14:16]}}),{{'%0.2f'|format(row[2])}}],
+            [new Date({{row[0][0:4]}},{{row[0][5:7]}}-1,{{row[0][8:10]}},{{row[0][11:13]}},{{row[0][14:16]}}),{{'%0.2f'|format(row[1])}}],
           {% endfor %}
         ]);
 
@@ -208,7 +227,5 @@
 
     }
 
-  </script>  
-  <!-- Google Charts JS end -->
+      </script>
 </html>
-
