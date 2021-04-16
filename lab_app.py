@@ -38,8 +38,10 @@ def sensors2():
                 return render_template("other-sensors.html", message = "not detected" , message2 = "No Gas leak detected")
             elif value2==0 and value==1:
                 return render_template("other-sensors.html", message = "detected" , message2 = "Gas leak detected")
-            else:
+            elif value2==o and value==0:
                 return render_template("other-sensors.html", message = "detected", message2 = "No Gas leak detected")
+            else:
+                return render_template("no_sensor.html")
             time.sleep(0.1)
 
 
