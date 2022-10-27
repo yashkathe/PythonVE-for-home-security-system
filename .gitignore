@@ -1,8 +1,4 @@
-/build
-*.db
-__pycache__/lab_app.cpython-36.pyc
-*.swm
-*.swn
-*.swo
-*.swp
-*.swl
+__pycache__/
+Adafruit_Python_DHT/
+bin/
+lib/
